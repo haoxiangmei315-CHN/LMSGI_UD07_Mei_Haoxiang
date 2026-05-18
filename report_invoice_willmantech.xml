@@ -1,0 +1,42 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<template id="report_invoice_sencilla">
+
+  <div>
+
+    <!-- Cabecera empresa -->
+    <h1>WillmanTech S.L.</h1>
+    <p>Sevilla</p>
+
+    <!-- Datos de la factura -->
+    <p>Factura número: <span t-field="doc.name"/></p>
+    <p>Fecha: <span t-field="doc.date"/></p>
+
+    <!-- Tabla de productos -->
+    <table border="1">
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th t-if="any(line.discount for line in doc.invoice_line_ids)">Descuento</th>
+      </tr>
+
+      <!-- Bucle para las líneas -->
+      <tr t-foreach="doc.invoice_line_ids" t-as="line">
+        <td t-field="line.name"></td>
+        <td t-field="line.quantity"></td>
+        <td t-field="line.price_unit"></td>
+        <td t-if="any(line.discount for line in doc.invoice_line_ids)" t-field="line.discount"></td>
+      </tr>
+    </table>
+
+    <!-- Total de la factura -->
+    <p>Total factura: <span t-field="doc.amount_total"/></p>
+
+  </div>
+
+</template>
+
+</odoo>
