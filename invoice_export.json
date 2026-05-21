@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1042,
+    "name": "FACT/2024/0042",
+    "state": "posted",
+    "move_type": "out_invoice",
+    "date": "2024-05-15",
+    "invoice_date_due": "2024-06-15",
+    "ref": "PEDIDO-2024-108",
+
+    "partner": {
+      "id": 78,
+      "name": "Distribuciones García e Hijos S.L.",
+      "vat": "B-87654321",
+      "email": "contabilidad@garciahijos.es",
+      "phone": "+34 955 123 456",
+      "street": "Avda. de la Industria, 17",
+      "city": "Dos Hermanas",
+      "zip": "41700",
+      "country": "España"
+    },
+
+    "invoice_lines": [
+      {
+        "id": 3101,
+        "sequence": 1,
+        "product_id": 12,
+        "product_code": "SRV-MANTENIMIENTO",
+        "description": "Servicio anual de mantenimiento ERP (módulo ventas y contabilidad)",
+        "quantity": 1.0,
+        "uom": "Unidad",
+        "price_unit": 1200.00,
+        "discount": 10.0,
+        "taxes": [
+          {
+            "id": 3,
+            "name": "IVA 21%",
+            "amount": 21.0,
+            "type": "percent"
+          }
+        ],
+        "price_subtotal": 1080.00,
+        "price_total": 1306.80
+      },
+      {
+        "id": 3102,
+        "sequence": 2,
+        "product_id": 45,
+        "product_code": "SRV-FORMACION-5H",
+        "description": "Bolsa de horas de formación presencial — 5 horas",
+        "quantity": 5.0,
+        "uom": "Hora",
+        "price_unit": 75.00,
+        "discount": 0.0,
+        "taxes": [
+          {
+            "id": 3,
+            "name": "IVA 21%",
+            "amount": 21.0,
+            "type": "percent"
+          }
+        ],
+        "price_subtotal": 375.00,
+        "price_total": 453.75
+      },
+      {
+        "id": 3103,
+        "sequence": 3,
+        "product_id": 67,
+        "product_code": "LIC-USUARIO-EXTRA",
+        "description": "Licencia adicional de usuario concurrente — período anual",
+        "quantity": 2.0,
+        "uom": "Licencia",
+        "price_unit": 300.00,
+        "discount": 0.0,
+        "taxes": [
+          {
+            "id": 3,
+            "name": "IVA 21%",
+            "amount": 21.0,
+            "type": "percent"
+          }
+        ],
+        "price_subtotal": 600.00,
+        "price_total": 726.00
+      }
+    ],
+
+    "totals": {
+      "currency": "EUR",
+      "amount_untaxed": 2055.00,
+      "amount_tax": 431.55,
+      "amount_total": 2486.55
+    },
+
+    "payment_term": {
+      "id": 2,
+      "name": "30 días fecha factura"
+    },
+
+    "journal": {
+      "id": 1,
+      "name": "Facturas de clientes"
+    },
+
+    "metadata": {
+      "created_by": "admin",
+      "created_at": "2024-05-15T09:32:10",
+      "last_modified_at": "2024-05-15T09:45:22",
+      "source_system": "WillmanTech ERP (Odoo 17)",
+      "export_format_version": "1.0"
+    }
+  }
+]

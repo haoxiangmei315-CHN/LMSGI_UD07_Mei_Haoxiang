@@ -1,42 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ============================================================
+     Plantilla QWeb de Factura - WillmanTech S.L.
+     Módulo: account (Odoo 16/17)
+     Archivo: report_invoice_willmantech.xml
+     Descripción: Plantilla personalizada para la generación del
+     informe de factura en PDF mediante el motor QWeb.
+     ============================================================ -->
 
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- ─────────────────────────────────────────────────────────
+         1. DECLARACIÓN DE LA PLANTILLA PRINCIPAL
+         El atributo 'inherit_id' apunta al informe base de Odoo
+         para facturas de cliente. Con 'primary="True"' creamos
+         una copia independiente, no una herencia parcial.
+    ───────────────────────────────────────────────────────────── -->
+    <template id="report_invoice_willmantech_document"
+              inherit_id="account.report_invoice_document"
+              primary="True">
 
-<template id="report_invoice">
+        <!-- Reemplazamos el bloque principal del cuerpo del informe -->
+        <xpath expr="//div[hasclass('page')]" position="replace">
 
-  <div>
+            <div class="page">
 
-    <!-- Cabecera empresa -->
-    <h1>WillmanTech S.L.</h1>
-    <p>Sevilla</p>
+                <!-- ─────────────────────────────────────────────
+                     CABECERA: Datos de la empresa y del cliente
+                ───────────────────────────────────────────────── -->
+                <div class="row mb-4">
+                    <!-- Columna izquierda: datos emisor -->
+                    <div class="col-6">
+                        <h3>WillmanTech S.L.</h3>
+                        <p>
+                            C/ Tecnología, 42 · 41092 Sevilla<br/>
+                            CIF: B-12345678<br/>
+                            Tel: +34 954 000 000<br/>
+                            Email: facturacion@willmantech.es
+                        </p>
+                    </div>
 
-    <!-- Datos de la factura -->
-    <p>Factura número: <span t-field="doc.name"/></p>
-    <p>Fecha: <span t-field="doc.date"/></p>
+                    <!-- Columna derecha: datos del receptor -->
+                    <div class="col-6 text-right">
+                        <h4>Factura a:</h4>
+                        <p>
+                            <!-- t-field renderiza el valor con el widget
+                                 correcto según el tipo de campo en Odoo -->
+                            <strong>
+                                <t t-field="doc.partner_id.name"/>
+                            </strong><br/>
+                            <t t-field="doc.partner_id.street"/><br/>
+                            <t t-if="doc.partner_id.zip">
+                                <t t-field="doc.partner_id.zip"/>
+                                <t t-field="doc.partner_id.city"/><br/>
+                            </t>
+                            <t t-field="doc.partner_id.country_id.name"/><br/>
+                            NIF/CIF: <t t-field="doc.partner_id.vat"/>
+                        </p>
+                    </div>
+                </div>
 
-    <!-- Tabla de productos -->
-    <table border="1">
-      <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio</th>
-        <th t-if="any(line.discount for line in doc.invoice_line_ids)">Descuento</th>
-      </tr>
+                <!-- ─────────────────────────────────────────────
+                     DATOS PRINCIPALES DE LA FACTURA
+                     doc.name       → Número de factura
+                     doc.date       → Fecha de emisión
+                     doc.invoice_date_due → Fecha de vencimiento
+                ───────────────────────────────────────────────── -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nº Factura</th>
+                                    <th>Fecha de Emisión</th>
+                                    <th>Fecha de Vencimiento</th>
+                                    <th>Referencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <t t-field="doc.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-field="doc.date"/>
+                                    </td>
+                                    <td>
+                                        <t t-field="doc.invoice_date_due"/>
+                                    </td>
+                                    <td>
+                                        <t t-field="doc.ref"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-      <!-- Bucle para las líneas -->
-      <tr t-foreach="doc.invoice_line_ids" t-as="line">
-        <td t-field="line.name"></td>
-        <td t-field="line.quantity"></td>
-        <td t-field="line.price_unit"></td>
-        <td t-if="any(line.discount for line in doc.invoice_line_ids)" t-field="line.discount"></td>
-      </tr>
-    </table>
+                <!-- ─────────────────────────────────────────────
+                     TABLA DE LÍNEAS DE FACTURA
 
-    <!-- Total de la factura -->
-    <p>Total factura: <span t-field="doc.amount_total"/></p>
+                     Uso de t-foreach para iterar sobre cada línea.
+                     La variable 'line' representa cada registro de
+                     account.move.line dentro de invoice_line_ids.
 
-  </div>
+                     Uso de t-if para mostrar/ocultar la columna
+                     "Descuento" solo cuando alguna línea la use.
+                     La expresión comprueba si el máximo de descuentos
+                     en todas las líneas es mayor que cero.
+                ───────────────────────────────────────────────── -->
 
-</template>
+                <!-- Calculamos si existe algún descuento en la factura.
+                     Lo guardamos como variable booleana para reutilizarla
+                     en el encabezado Y en cada fila sin repetir lógica. -->
+                <t t-set="hay_descuento"
+                   t-value="any(line.discount for line in doc.invoice_line_ids)"/>
+
+                <table class="table table-sm table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Ref.</th>
+                            <th>Descripción del Producto/Servicio</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-right">Precio Unit.</th>
+                            <!-- La columna Descuento solo aparece si
+                                 alguna línea tiene descuento aplicado -->
+                            <t t-if="hay_descuento">
+                                <th class="text-right">Descuento (%)</th>
+                            </t>
+                            <th class="text-right">Impuestos</th>
+                            <th class="text-right">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- t-foreach recorre invoice_line_ids.
+                             t-as="line" es el alias de cada iteración.
+                             t-key es obligatorio para el renderizado
+                             eficiente del motor QWeb. -->
+                        <t t-foreach="doc.invoice_line_ids"
+                           t-as="line"
+                           t-key="line.id">
+
+                            <!-- Saltamos las líneas de nota o sección
+                                 que no son productos reales -->
+                            <t t-if="line.display_type == 'product'">
+                                <tr>
+                                    <td>
+                                        <t t-field="line.product_id.default_code"/>
+                                    </td>
+                                    <td>
+                                        <t t-field="line.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-field="line.quantity"/>
+                                        <t t-field="line.product_uom_id"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-field="line.price_unit"
+                                           t-options='{"widget": "monetary",
+                                                       "display_currency": doc.currency_id}'/>
+                                    </td>
+                                    <!-- Celda de descuento: solo se pinta si
+                                         la variable hay_descuento es verdadera -->
+                                    <t t-if="hay_descuento">
+                                        <td class="text-right">
+                                            <t t-field="line.discount"/>
+                                            %
+                                        </td>
+                                    </t>
+                                    <td class="text-right">
+                                        <t t-foreach="line.tax_ids"
+                                           t-as="tax"
+                                           t-key="tax.id">
+                                            <span>
+                                                <t t-field="tax.name"/>
+                                            </span>
+                                        </t>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-field="line.price_subtotal"
+                                           t-options='{"widget": "monetary",
+                                                       "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Bloque especial para líneas de sección o nota -->
+                            <t t-if="line.display_type in ('line_section', 'line_note')">
+                                <tr>
+                                    <td colspan="7"
+                                        class="font-weight-bold">
+                                        <t t-field="line.name"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </t><!-- fin t-foreach -->
+                    </tbody>
+                </table>
+
+                <!-- ─────────────────────────────────────────────
+                     BLOQUE DE TOTALES
+                     amount_untaxed → Base imponible
+                     amount_tax     → Total impuestos
+                     amount_total   → Total neto a pagar
+                ───────────────────────────────────────────────── -->
+                <div class="row">
+                    <div class="col-6 offset-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="text-right">Base Imponible:</td>
+                                <td class="text-right">
+                                    <t t-field="doc.amount_untaxed"
+                                       t-options='{"widget": "monetary",
+                                                   "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Total Impuestos:</td>
+                                <td class="text-right">
+                                    <t t-field="doc.amount_tax"
+                                       t-options='{"widget": "monetary",
+                                                   "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="font-weight-bold">
+                                <td class="text-right">TOTAL A PAGAR:</td>
+                                <td class="text-right">
+                                    <t t-field="doc.amount_total"
+                                       t-options='{"widget": "monetary",
+                                                   "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ─────────────────────────────────────────────
+                     PIE DE FACTURA: Notas y condiciones de pago
+                ───────────────────────────────────────────────── -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <t t-if="doc.narration">
+                            <h5>Notas:</h5>
+                            <p><t t-field="doc.narration"/></p>
+                        </t>
+                        <t t-if="doc.invoice_payment_term_id">
+                            <p>
+                                <strong>Condiciones de pago: </strong>
+                                <t t-field="doc.invoice_payment_term_id.name"/>
+                            </p>
+                        </t>
+                        <hr/>
+                        <p class="text-muted text-center small">
+                            WillmanTech S.L. · CIF B-12345678 ·
+                            Inscrita en el Registro Mercantil de Sevilla
+                        </p>
+                    </div>
+                </div>
+
+            </div><!-- fin .page -->
+        </xpath>
+    </template>
+
+    <!-- ─────────────────────────────────────────────────────────
+         2. REGISTRO DEL INFORME EN ODOO
+         Este bloque vincula la plantilla con la acción de impresión
+         del modelo account.move (facturas).
+    ───────────────────────────────────────────────────────────── -->
+    <report
+        id="action_report_invoice_willmantech"
+        model="account.move"
+        string="Factura WillmanTech"
+        report_type="qweb-pdf"
+        name="willmantech_invoices.report_invoice_willmantech_document"
+        file="willmantech_invoices.report_invoice_willmantech_document"
+        print_report_name="(object.name or '').replace('/','-')"
+    />
 
 </odoo>

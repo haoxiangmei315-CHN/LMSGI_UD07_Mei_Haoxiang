@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    ================================================================
+    Factura Electrónica UBL 2.1 — WillmanTech S.L.
+    Archivo: invoice_ubl.xml
+
+    Estándar: OASIS Universal Business Language (UBL) 2.1
+    Perfil:   PEPPOL BIS Billing 3.0
+              (urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0)
+
+    Espacios de nombres principales:
+      cbc → Common Basic Components   (campos simples: texto, número, fecha)
+      cac → Common Aggregate Components (bloques estructurados: dirección, línea...)
+    ================================================================
+-->
+<Invoice
+    xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+    xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+    xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2
+                        http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 1 — CABECERA DEL DOCUMENTO
+         Información administrativa e identificación del perfil PEPPOL
+    ──────────────────────────────────────────────────────────────── -->
+
+    <!--
+        CustomizationID: identifica el perfil europeo EN16931 dentro de PEPPOL.
+        Este ID es obligatorio para que la red PEPPOL valide el documento.
+    -->
+    <cbc:CustomizationID>
+        urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0
+    </cbc:CustomizationID>
+
+    <!-- ProfileID: identifica el proceso de negocio (billing = facturación) -->
+    <cbc:ProfileID>
+        urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+    </cbc:ProfileID>
+
+    <!-- Número único de factura en el sistema emisor -->
+    <cbc:ID>FACT/2024/0042</cbc:ID>
+
+    <!-- Fecha de emisión en formato ISO 8601 (AAAA-MM-DD) -->
+    <cbc:IssueDate>2024-05-15</cbc:IssueDate>
+
+    <!-- Fecha de vencimiento del pago -->
+    <cbc:DueDate>2024-06-15</cbc:DueDate>
+
+    <!--
+        InvoiceTypeCode: código UNTDID 380 = factura comercial estándar.
+        Otros valores habituales: 381 = abono, 389 = autofactura.
+    -->
+    <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+
+    <!-- Nota libre adjunta a la factura -->
+    <cbc:Note>Gracias por confiar en WillmanTech S.L.</cbc:Note>
+
+    <!-- Código de moneda según ISO 4217 -->
+    <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+
+    <!-- Referencia al pedido del cliente -->
+    <cbc:BuyerReference>PEDIDO-2024-108</cbc:BuyerReference>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 2 — DATOS DEL EMISOR (SUPPLIER / VENDEDOR)
+         cac: indica que es un componente agregado (bloque compuesto)
+    ──────────────────────────────────────────────────────────────── -->
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+
+            <!-- Identificador PEPPOL del emisor (formato ES:VAT) -->
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="0184">ES:B12345678</cbc:ID>
+            </cac:PartyIdentification>
+
+            <cac:PartyName>
+                <cbc:Name>WillmanTech S.L.</cbc:Name>
+            </cac:PartyName>
+
+            <!-- Dirección postal del emisor -->
+            <cac:PostalAddress>
+                <cbc:StreetName>Calle Tecnología, 42</cbc:StreetName>
+                <cbc:CityName>Sevilla</cbc:CityName>
+                <cbc:PostalZone>41092</cbc:PostalZone>
+                <cac:Country>
+                    <!-- ISO 3166-1 alpha-2 -->
+                    <cbc:IdentificationCode>ES</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+
+            <!-- Identificación fiscal (CIF/NIF) -->
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>B-12345678</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+
+            <!-- Nombre legal completo -->
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>WillmanTech S.L.</cbc:RegistrationName>
+                <cbc:CompanyID>B-12345678</cbc:CompanyID>
+            </cac:PartyLegalEntity>
+
+            <!-- Contacto -->
+            <cac:Contact>
+                <cbc:ElectronicMail>facturacion@willmantech.es</cbc:ElectronicMail>
+                <cbc:Telephone>+34 954 000 000</cbc:Telephone>
+            </cac:Contact>
+
+        </cac:Party>
+    </cac:AccountingSupplierParty>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 3 — DATOS DEL RECEPTOR (BUYER / COMPRADOR)
+    ──────────────────────────────────────────────────────────────── -->
+    <cac:AccountingCustomerParty>
+        <cac:Party>
+
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="0184">ES:B87654321</cbc:ID>
+            </cac:PartyIdentification>
+
+            <cac:PartyName>
+                <cbc:Name>Distribuciones García e Hijos S.L.</cbc:Name>
+            </cac:PartyName>
+
+            <cac:PostalAddress>
+                <cbc:StreetName>Avda. de la Industria, 17</cbc:StreetName>
+                <cbc:CityName>Dos Hermanas</cbc:CityName>
+                <cbc:PostalZone>41700</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>ES</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>B-87654321</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Distribuciones García e Hijos S.L.</cbc:RegistrationName>
+                <cbc:CompanyID>B-87654321</cbc:CompanyID>
+            </cac:PartyLegalEntity>
+
+            <cac:Contact>
+                <cbc:ElectronicMail>contabilidad@garciahijos.es</cbc:ElectronicMail>
+                <cbc:Telephone>+34 955 123 456</cbc:Telephone>
+            </cac:Contact>
+
+        </cac:Party>
+    </cac:AccountingCustomerParty>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 4 — CONDICIONES DE PAGO
+    ──────────────────────────────────────────────────────────────── -->
+    <cac:PaymentTerms>
+        <cbc:Note>30 días fecha factura</cbc:Note>
+    </cac:PaymentTerms>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 5 — RESUMEN DE IMPUESTOS
+         Un bloque TaxTotal por cada tipo de impuesto aplicado.
+    ──────────────────────────────────────────────────────────────── -->
+    <cac:TaxTotal>
+        <!-- Importe total de IVA (21% sobre 2055.00 €) -->
+        <cbc:TaxAmount currencyID="EUR">431.55</cbc:TaxAmount>
+
+        <cac:TaxSubtotal>
+            <!-- Base imponible sobre la que se aplica este tramo -->
+            <cbc:TaxableAmount currencyID="EUR">2055.00</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="EUR">431.55</cbc:TaxAmount>
+            <cac:TaxCategory>
+                <!-- S = Standard rate (tipo general) según UNTDID 5305 -->
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>21</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:TaxCategory>
+        </cac:TaxSubtotal>
+    </cac:TaxTotal>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 6 — TOTALES MONETARIOS DEL DOCUMENTO
+    ──────────────────────────────────────────────────────────────── -->
+    <cac:LegalMonetaryTotal>
+        <!-- Suma de subtotales de línea (sin impuestos, sin descuentos globales) -->
+        <cbc:LineExtensionAmount currencyID="EUR">2055.00</cbc:LineExtensionAmount>
+        <!-- Base imponible total (igual a LineExtensionAmount si no hay ajustes globales) -->
+        <cbc:TaxExclusiveAmount currencyID="EUR">2055.00</cbc:TaxExclusiveAmount>
+        <!-- Total con impuestos incluidos -->
+        <cbc:TaxInclusiveAmount currencyID="EUR">2486.55</cbc:TaxInclusiveAmount>
+        <!-- Importe final a pagar -->
+        <cbc:PayableAmount currencyID="EUR">2486.55</cbc:PayableAmount>
+    </cac:LegalMonetaryTotal>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         BLOQUE 7 — LÍNEAS DE FACTURA
+         Cada InvoiceLine corresponde a un producto o servicio facturado.
+    ──────────────────────────────────────────────────────────────── -->
+
+    <!-- LÍNEA 1: Mantenimiento ERP (con descuento del 10%) -->
+    <cac:InvoiceLine>
+        <cbc:ID>1</cbc:ID>
+        <!-- Cantidad facturada (1 unidad de mantenimiento anual) -->
+        <cbc:InvoicedQuantity unitCode="EA">1</cbc:InvoicedQuantity>
+        <!-- Subtotal de línea: 1200.00 × 1 × (1 - 10%) = 1080.00 -->
+        <cbc:LineExtensionAmount currencyID="EUR">1080.00</cbc:LineExtensionAmount>
+
+        <cac:AllowanceCharge>
+            <!-- ChargeIndicator false = es un descuento (no un recargo) -->
+            <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+            <cbc:AllowanceChargeReason>Descuento comercial</cbc:AllowanceChargeReason>
+            <cbc:MultiplierFactorNumeric>0.10</cbc:MultiplierFactorNumeric>
+            <cbc:Amount currencyID="EUR">120.00</cbc:Amount>
+            <cbc:BaseAmount currencyID="EUR">1200.00</cbc:BaseAmount>
+        </cac:AllowanceCharge>
+
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="EUR">226.80</cbc:TaxAmount>
+        </cac:TaxTotal>
+
+        <cac:Item>
+            <cbc:Description>
+                Servicio anual de mantenimiento ERP (módulo ventas y contabilidad)
+            </cbc:Description>
+            <cbc:Name>SRV-MANTENIMIENTO</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>21</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">1200.00</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+
+    <!-- LÍNEA 2: Formación (5 horas, sin descuento) -->
+    <cac:InvoiceLine>
+        <cbc:ID>2</cbc:ID>
+        <!-- HUR = hora (código UNECE rec20) -->
+        <cbc:InvoicedQuantity unitCode="HUR">5</cbc:InvoicedQuantity>
+        <!-- Subtotal: 75.00 × 5 = 375.00 -->
+        <cbc:LineExtensionAmount currencyID="EUR">375.00</cbc:LineExtensionAmount>
+
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="EUR">78.75</cbc:TaxAmount>
+        </cac:TaxTotal>
+
+        <cac:Item>
+            <cbc:Description>
+                Bolsa de horas de formación presencial — 5 horas
+            </cbc:Description>
+            <cbc:Name>SRV-FORMACION-5H</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>21</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">75.00</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+
+    <!-- LÍNEA 3: Licencias adicionales (2 unidades, sin descuento) -->
+    <cac:InvoiceLine>
+        <cbc:ID>3</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="EA">2</cbc:InvoicedQuantity>
+        <!-- Subtotal: 300.00 × 2 = 600.00 -->
+        <cbc:LineExtensionAmount currencyID="EUR">600.00</cbc:LineExtensionAmount>
+
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="EUR">126.00</cbc:TaxAmount>
+        </cac:TaxTotal>
+
+        <cac:Item>
+            <cbc:Description>
+                Licencia adicional de usuario concurrente — período anual
+            </cbc:Description>
+            <cbc:Name>LIC-USUARIO-EXTRA</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>21</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">300.00</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+
+</Invoice>
