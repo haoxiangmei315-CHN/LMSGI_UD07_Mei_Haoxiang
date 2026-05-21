@@ -1,5 +1,5 @@
 # LMSGI_UD07 - Explotación Tecnológica en ERP/CRM
-### WillmanTech S.L. — DAM/DAW 2024/2025
+### WillmanTech S.L. — DAM 2024/2025
 
 ---
 
